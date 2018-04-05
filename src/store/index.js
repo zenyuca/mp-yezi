@@ -2,52 +2,31 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 
-const TABS = 'TABS'
+const DATA = 'DATA'
+const ACCOUNT = 'ACCOUNT'
 
 const store = new Vuex.Store({
   state: {
-    tabs: [
-      {
-        name: '主页',
-        icon: '/static/images/index/msg.png',
-        iconOn: '/static/images/index/msg-on.png',
-        route: '/pages/index/main',
-        on: true
-      },
-      {
-        name: '消息',
-        icon: '/static/images/index/msg.png',
-        iconOn: '/static/images/index/msg-on.png',
-        route: '/pages/index/main',
-        on: false
-      },
-      {
-        name: '签到',
-        icon: '/static/images/index/sign.png',
-        iconOn: '/static/images/index/sign-on.png',
-        route: '/pages/index/main',
-        on: false
-      },
-      {
-        name: '我的',
-        icon: '/static/images/index/me.png',
-        iconOn: '/static/images/index/me-on.png',
-        route: '/pages/me/main',
-        on: false
-      }
-    ]
+    data: {},
+    account: {}
   },
   mutations: {
-    [TABS] (state, data) {
-      state.tabs = data
+    [DATA] (state, data) {
+      state.data = data
+    },
+    [ACCOUNT] (state, account) {
+      state.account = account
     }
   },
   getters: {
-    getTabs: state => state.tabs
+    getData: state => state.data
   },
   actions: {
-    storeTabs ({commit, state}, data) {
-      commit(TABS, data)
+    storeData ({commit, state}, data) {
+      commit(DATA, data)
+    },
+    storeAccount ({commit, state}, account) {
+      commit(ACCOUNT, account)
     }
   }
 })

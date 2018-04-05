@@ -1,80 +1,72 @@
 <template>
-  <div class="container">
-    <div class="content-wrapper">
-      <swiper class="bar-swiper" indicator-dots autoplay :interval="10000" duration
-              indicator-color="rgba(255, 255, 255, .3)"
-              indicator-active-color="rgba(210, 34, 34, .7)">
-        <swiper-item :key="index" v-for="(item, index) of list">
-          <img :src="item.url" class="slider-img" mode="aspectFill"/>
-        </swiper-item>
-      </swiper>
-      <ul class="btn-type-1 btns">
-        <li class="btn" :key="index" v-for="(btn, index) in btnType1" @click="toPage(btn)">
-          <div class="icon-wrapper">
-            <img class="newTag" v-if="btn.on" src="/static/images/index/new.png"/>
-            <img class="icon" :src="btn.icon"/>
-          </div>
-          <div class="name-wrapper">
-            <span class="name">{{ btn.name }}</span>
-          </div>
-        </li>
-      </ul>
-      <div class="cut-off-line"></div>
-      <ul class="btn-type-2 btns">
-        <div class="btn-title">
-          <div class="line"></div>
-          <div class="name">
-            互动交流
-          </div>
-          <div class="line"></div>
+  <div class="container-content">
+    <swiper class="bar-swiper" indicator-dots autoplay :interval="10000" duration
+            indicator-color="rgba(255, 255, 255, .3)"
+            indicator-active-color="rgba(210, 34, 34, .7)">
+      <swiper-item :key="index" v-for="(item, index) of list">
+        <img :src="item.url" class="slider-img" mode="aspectFill"/>
+      </swiper-item>
+    </swiper>
+    <ul class="btn-type-1 btns">
+      <li class="btn" :key="index" v-for="(btn, index) in btnType1" @click="toPage(btn)">
+        <div class="icon-wrapper">
+          <img class="newTag" v-if="btn.on" src="/static/images/index/new.png"/>
+          <img class="icon" :src="btn.icon"/>
         </div>
-        <div style="overflow-x: auto">
-          <div class="wrapper-li">
-            <li class="btn" :key="index" v-for="(btn, index) in btnType2" @click="toPage(btn)">
-              <div class="icon-wrapper">
-                <img class="newTag2" v-if="btn.on" src="/static/images/index/new2.png"/>
-                <img class="icon" height="100" :src="btn.icon"/>
-              </div>
-              <div class="name-wrapper">
-                <span class="name">{{ btn.name }}</span>
-              </div>
-            </li>
-          </div>
+        <div class="name-wrapper">
+          <span class="name">{{ btn.name }}</span>
         </div>
-      </ul>
-      <!--<div class="cut-off-line"></div>-->
-      <ul class="btn-type-3 btns" v-if="service">
-        <div class="btn-title">
-          <div class="line"></div>
-          <div class="name">
-            便民服务
-          </div>
-          <div class="line"></div>
+      </li>
+    </ul>
+    <div class="cut-off-line"></div>
+    <ul class="btn-type-2 btns">
+      <div class="btn-title">
+        <div class="line"></div>
+        <div class="name">
+          互动交流
         </div>
-        <li class="btn" @click="go(['fwhService', {id: item.id}, {name: item.name}])" v-for="(item, i) in service"
-            :key="i">
-          <div class="icon-wrapper">
-            <img class="icon" height="100" :src="item.url"/>
-          </div>
-        </li>
-      </ul>
-      <div class="cut-off-line" v-if="service"></div>
-    </div>
-    <cnav></cnav>
+        <div class="line"></div>
+      </div>
+      <div style="overflow-x: auto">
+        <div class="wrapper-li">
+          <li class="btn" :key="index" v-for="(btn, index) in btnType2" @click="toPage(btn)">
+            <div class="icon-wrapper">
+              <img class="newTag2" v-if="btn.on" src="/static/images/index/new2.png"/>
+              <img class="icon" height="100" :src="btn.icon"/>
+            </div>
+            <div class="name-wrapper">
+              <span class="name">{{ btn.name }}</span>
+            </div>
+          </li>
+        </div>
+      </div>
+    </ul>
+    <ul class="btn-type-3 btns">
+      <div class="btn-title">
+        <div class="line"></div>
+        <div class="name">
+          便民服务
+        </div>
+        <div class="line"></div>
+      </div>
+      <li class="btn" v-for="(item, i) in btnType3"
+          :key="i">
+        <div class="icon-wrapper">
+          <img class="icon" height="100" :src="item.icon"/>
+        </div>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
   import {ajax} from '../../utils/ajax'
-  import cnav from '../../components/cnav'
+  import {mapState, mapActions} from 'vuex'
 
   export default {
-    components: {
-      cnav
-    },
+    components: {},
     data () {
       return {
-        cars: [],
         list: [],
         userInfo: {},
         btnType1: [
@@ -178,24 +170,18 @@
         ]
       }
     },
+    computed: {
+      ...mapState(['data', 'account'])
+    },
     created () {
-      wx.setNavigationBarTitle({
-        title: ''
-      })
-      wx.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#ffb844',
-        animation: {
-          duration: 400,
-          timingFunc: 'easeIn'
-        }
-      })
       // 调用应用实例的方法获取全局数据
       this.getUserInfo()
+      this.initSwiperImages()
     },
     mounted: function () {
     },
     methods: {
+      ...mapActions(['storeAccount']),
       toPage (btn) {
         let url = btn.url
         if (url) {
@@ -214,25 +200,41 @@
           })
         }
       },
+      initSwiperImages () {
+        let list = this.data.swiperImages
+        if (!list) {
+          ajax('/testapi').then(data => {
+            list = data.swiperImages
+            this.data.swiperImages = list
+            this.list = list
+          })
+        } else {
+          this.list = list
+        }
+      },
       getUserInfo () {
-        wx.showNavigationBarLoading()
-        ajax('/testapi').then(data => {
-          this.list = data.swiperImages
+        let account = this.account
+        if (!account.nickName) {
           // 调用登录接口
           wx.login({
             success: () => {
               wx.getUserInfo({
                 success: (res) => {
-                  this.userInfo = res.userInfo
-                  this.list.push({
-                    url: this.userInfo.avatarUrl
-                  })
-                  this.list = this.list.reverse()
-                  wx.hideNavigationBarLoading()
+                  account = res.userInfo
+                  this.storeAccount(account)
+                  this.saveAccount(account)
                 }
               })
             }
           })
+        }
+      },
+      saveAccount (account) {
+        let data = {
+          account,
+          swiperImages: this.list
+        }
+        ajax('/testapi', {method: 'post', data}).then(data => {
         })
       }
     }
@@ -390,7 +392,7 @@
     display: block;
     .btn {
       float: left;
-      width: calc(~"50% - " @11px);
+      width: calc(~"50% - " @12px);
       height: @184px;
       margin-right: @22px;
       margin-bottom: @22px;

@@ -8,10 +8,12 @@ export const ajax = (url = '', options = {}) => {
     let header = options.header || {
       'content-type': 'application/json'
     }
+    let data = options.data || {}
     wx.request({
       url: `${domainname}${url}`,
       method,
       header,
+      data,
       success: function (res) {
         resolve(res.data)
       },

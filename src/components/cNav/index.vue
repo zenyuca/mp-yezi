@@ -13,26 +13,52 @@
 </template>
 
 <script>
-  import {mapState, mapGetters, mapActions} from 'vuex'
-
   export default {
     components: {},
     data () {
       return {
-        footerTabs: []
+        footerTabs: [
+          {
+            name: '主页',
+            icon: '/static/images/index/msg.png',
+            iconOn: '/static/images/index/msg-on.png',
+            route: '/pages/index/main',
+            on: false,
+            type: 1
+          },
+          {
+            name: '消息',
+            icon: '/static/images/index/msg.png',
+            iconOn: '/static/images/index/msg-on.png',
+            route: '/pages/index/main',
+            on: false,
+            type: 2
+          },
+          {
+            name: '签到',
+            icon: '/static/images/index/sign.png',
+            iconOn: '/static/images/index/sign-on.png',
+            route: '/pages/index/main',
+            on: false,
+            type: 3
+          },
+          {
+            name: '我的',
+            icon: '/static/images/index/me.png',
+            iconOn: '/static/images/index/me-on.png',
+            route: '/pages/cme/main',
+            on: false,
+            type: 4
+          }
+        ]
       }
     },
     created () {
-      console.log(this.tabs)
-      console.log(this.getTabs)
-      this.footerTabs = this.tabs
+      this.changeTab(this.footerTabs[0])
     },
     computed: {
-      ...mapState(['tabs']),
-      ...mapGetters(['getTabs'])
     },
     methods: {
-      ...mapActions(['storeTabs']),
       changeTab (tab) {
         let target = ''
         for (let item of this.footerTabs) {
@@ -42,11 +68,23 @@
             target = item
           }
         }
-        if (target) {
-          wx.switchTab({
-            url: target.route
-          })
-        }
+        wx.setNavigationBarTitle({
+          title: target.name
+        })
+        wx.setNavigationBarColor({
+          frontColor: '#ffffff',
+          backgroundColor: '#ffb844',
+          animation: {
+            duration: 400,
+            timingFunc: 'easeIn'
+          }
+        })
+        this.$emit('changeDone', target)
+        // if (target) {
+        //   wx.switchTab({
+        //     url: target.route
+        //   })
+        // }
       }
     }
   }
