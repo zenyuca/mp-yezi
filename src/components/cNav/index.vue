@@ -1,6 +1,6 @@
 <template>
-  <ul class="btn-footer btns">
-    <li class="btn" :key="index" v-for="(btn, index) in footerTabs" @click="changeTab(btn)">
+  <ul class="btn-footer btns" :class="{'isIphoneX': data.isIphoneX}">
+    <li class="btn" :key="index" v-for="(btn, index) in footerTabs" @tap="changeTab(btn)">
       <div class="icon-wrapper">
         <img class="icon" v-if="!btn.on" :src="btn.icon"/>
         <img class="icon" v-if="btn.on" :src="btn.iconOn"/>
@@ -13,10 +13,13 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   export default {
     components: {},
     data () {
       return {
+        isIphoneX: false,
         footerTabs: [
           {
             name: '主页',
@@ -54,11 +57,23 @@
       }
     },
     created () {
+      this.init()
       this.changeTab(this.footerTabs[0])
     },
     computed: {
+      ...mapState(['data'])
     },
     methods: {
+      init () {
+        let data = this.data
+        wx.getSystemInfo({
+          success: function (res) {
+            if (res.model === 'iPhone X') {
+              data.isIphoneX = true
+            }
+          }
+        })
+      },
       changeTab (tab) {
         let target = ''
         for (let item of this.footerTabs) {
@@ -90,7 +105,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
   @import "../../common/less/base";
   .btns {
     display: flex;
@@ -117,7 +132,7 @@
     }
   }
   .btn-footer {
-    height: @98px;
+    height: @120px;
     width: 100%;
     position: fixed;
     left: 0;
@@ -126,7 +141,14 @@
     border-top: 1px solid #e4e4e4;
     z-index: 1;
     background-color: #fff;
+    display: flex;
+    align-items: center;
+    &.isIphoneX {
+      height: @170px;
+    }
     .btn {
+      height: 100%;
+      padding-top: @50px;
       .icon.wrapper, .name-wrapper {
         float: left;
         display: flex;

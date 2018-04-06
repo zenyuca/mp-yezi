@@ -1,5 +1,5 @@
 <template>
-  <div class="container-content">
+  <div class="container-content" :class="{'isIphoneX': data.isIphoneX}">
     <div class="bar-info">
       <img class="avatar" :src="userInfo.avatarUrl" />
       <div class="nickname">

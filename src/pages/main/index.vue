@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import {ajax} from '../../utils/ajax'
+  import {mapState} from 'vuex'
   import cNav from '../../components/cNav'
   import cMe from '../../components/cMe'
   import cIndex from '../../components/cIndex'
@@ -30,31 +30,13 @@
       }
     },
     created () {
-      // 调用应用实例的方法获取全局数据
-      this.getUserInfo()
     },
     mounted: function () {
     },
+    computed: {
+      ...mapState(['data'])
+    },
     methods: {
-      getUserInfo () {
-        ajax('/testapi').then(data => {
-          this.list = data.swiperImages
-          // 调用登录接口
-          wx.login({
-            success: () => {
-              wx.getUserInfo({
-                success: (res) => {
-                  this.userInfo = res.userInfo
-                  this.list.push({
-                    url: this.userInfo.avatarUrl
-                  })
-                  this.list = this.list.reverse()
-                }
-              })
-            }
-          })
-        })
-      },
       changeTabDone (tab) {
         this.currentTab = tab.type
       }
@@ -67,6 +49,9 @@
   .container-content {
     float: left;
     width: 100%;
-    padding-bottom: @98px;
+    padding-bottom: @120px;
+    &.isIphoneX {
+      padding-bottom: @170px;
+    }
   }
 </style>

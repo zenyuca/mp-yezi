@@ -1,5 +1,5 @@
 <template>
-  <div class="container-content">
+  <div class="container-content" :class="{'isIphoneX': data.isIphoneX}">
     <swiper class="bar-swiper" indicator-dots autoplay :interval="10000" duration
             indicator-color="rgba(255, 255, 255, .3)"
             indicator-active-color="rgba(210, 34, 34, .7)">
@@ -222,7 +222,7 @@
                 success: (res) => {
                   account = res.userInfo
                   this.storeAccount(account)
-                  this.saveAccount(account)
+                  // this.saveAccount(account)
                 }
               })
             }

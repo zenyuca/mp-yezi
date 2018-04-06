@@ -1,5 +1,5 @@
 <template>
-  <div class="container-content">
+  <div class="container-content" :class="{'isIphoneX': data.isIphoneX}">
     进入消息列表{{data.count}}次
   </div>
 </template>
